@@ -1,0 +1,113 @@
+<template>
+  <div class="treinos">
+    <div class="row p-2">
+      <div class="col">
+        <h3 class="d-inline-block">Meus treinos</h3>
+        <!-- <b-button size="sm" variant="primary" @click="copy"><font-awesome-icon icon="copy" /></b-button> -->
+        <!-- <b-button size="sm" variant="primary" v-b-modal.modal_paste><font-awesome-icon icon="upload" /></b-button> -->
+      </div>
+      <div class="col float-right">
+        <b-button v-b-modal.modal_novo_treino size="sm" variant="outline-primary" class="float-right">Novo treino</b-button>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr v-show="treinos.length>0">
+            <th scope="col">Nome</th>
+            <th scope="col">Último treino</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="treino in treinos" :key="treino.index">
+            <td><router-link :to="{ name: 'Treino', params: { id: treino.id }}">{{ treino.nome }}</router-link></td>
+            <td>{{ treino.ultimo_treino | moment('DD/MM/YYYY') }} ({{ treino.ultimo_treino | moment("from", "now") }})</td>
+            <td>
+              <b-dropdown variant="light" size="sm" no-caret>
+                <template slot="button-content">
+                  <font-awesome-icon icon="ellipsis-v" />
+                </template>
+                <b-dropdown-item :to="{ name: 'Treino', params: { id: treino.id }}"><span class="d-inline-block float-left pr-2"><font-awesome-icon icon="edit" /></span>Editar</b-dropdown-item>
+                <b-dropdown-item @click="deleteTreino(treino.id)"><span class="d-inline-block float-left pr-2"><font-awesome-icon icon="trash" /></span>Apagar</b-dropdown-item>
+              </b-dropdown>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="4" v-show="!!!treinos.length"><h4>Nenhum treino disponível</h4></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <b-modal
+      id="modal_novo_treino"
+      ref="modal_novo_treino"
+      title="Novo treino"
+      >
+      <b-form-group id="inputGroup" label="Nome:" label-for="Input">
+        <b-form-input
+          id="nome"
+          type="text"
+          v-model="form.nome"
+          required
+          placeholder="Digite o nome do novo treino" />
+      </b-form-group>      
+      <div slot="modal-footer" class="w-100">
+        <b-button
+          variant="primary"
+          size="sm"
+          class="float-right"
+          @click="criarTreino"
+        >
+          Criar
+        </b-button>
+      </div>
+    </b-modal>
+  </div>
+</template>
+
+<script>
+import { mapState, mapActions } from 'vuex'
+import libs from '@/mixins/libs'
+
+export default {
+  name: 'Treinos',
+  data () {
+    return {
+      form: {
+        id: null,
+        nome: '',
+        ultimo_treino: null
+      }
+    }
+  },
+  mixins: [libs],
+  computed: {
+    ...mapState([
+      'treinos'
+    ])
+  },
+  methods: {
+    ...mapActions([
+      'addTreino'
+    ]),
+    criarTreino (){
+      this.$refs.modal_novo_treino.hide()
+
+const payload = {
+        id: this.generateUUID(),
+        nome: this.form.nome,
+        ultimo_treino: this.form.ultimo_treino
+      }
+
+      this.addTreino(payload)
+      // reset form after submit
+      this.form = {
+        nome: '',
+        id: null,
+        ultimo_treino: null
+      }
+    }
+  }
+}
+</script>
