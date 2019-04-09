@@ -20,10 +20,9 @@ export default new Vuex.Store({
       localStorage.setItem('treinosempre', JSON.stringify(state))
     },
     addExercicio: (state, payload) => {
-      console.log('payload',payload)
       const posicao = state.treinos.findIndex(objeto => objeto.id === payload.treino_id)
       if (posicao >= 0) {
-        let exercicio = {
+        const exercicio = {
           id: payload.id,
           nome: payload.nome,
           carga: payload.carga,
@@ -34,14 +33,36 @@ export default new Vuex.Store({
         localStorage.setItem('treinosempre', JSON.stringify(state))
       }
     },
-    
+    delTreino: (state, payload) => {
+      const posicaoTreino = state.treinos.findIndex(objeto => objeto.id === payload.id)
+      if (posicaoTreino >= 0) {
+        state.treinos.splice(posicaoTreino, 1)
+        localStorage.setItem('treinosempre', JSON.stringify(state))
+      }
+    },
+    delExercicio: (state, payload) => {
+      const posicaoTreino = state.treinos.findIndex(objeto => objeto.id === payload.treino_id)
+      if (posicaoTreino >= 0) {
+        const posicaoExercicio = state.treinos[posicaoTreino].exercicios.findIndex(objeto => objeto.id === payload.id)
+        if (posicaoExercicio >= 0) {
+          state.treinos[posicaoTreino].exercicios.splice(posicaoExercicio, 1)
+          localStorage.setItem('treinosempre', JSON.stringify(state))
+        }
+      }
+    }
   },
   actions: {
     addTreino: ({ commit }, payload) => {
       commit("addTreino", payload)
     },
-    addExercicio: ({ commit }, treinoId, payload) => {
-      commit("addExercicio", treinoId, payload)
+    addExercicio: ({ commit }, payload) => {
+      commit("addExercicio", payload)
+    },
+    delTreino: ({ commit }, payload) => {
+      commit("delTreino", payload)
+    },
+    delExercicio: ({ commit }, payload) => {
+      commit("delExercicio", payload)
     }
   },
   getters: {

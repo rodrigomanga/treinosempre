@@ -94,8 +94,21 @@ export default {
   },
   methods: {
     ...mapActions([
-      'addTreino'
+      'addTreino',
+      'delTreino'
     ]),
+    deleteTreino (treinoId){
+      const payload = {
+        id: treinoId,
+      }
+
+      this.delTreino(payload)
+      this.$emit('showAlert', {
+        mensagem: 'Treino apagado',
+        tipo: 'success',
+        tempo: 2000
+      });
+    },
     criarTreino (){
       if (!this.form.nome) {
         this.$emit('showAlert', {

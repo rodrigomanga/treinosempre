@@ -32,7 +32,7 @@
                 <template slot="button-content">
                   <font-awesome-icon icon="ellipsis-v" />
                 </template>
-                <b-dropdown-item @click="deleteExercicio(treino, exercicio.id)"><span class="d-inline-block float-left pr-2"><font-awesome-icon icon="trash" /></span>Apagar</b-dropdown-item>
+                <b-dropdown-item @click="deleteExercicio(exercicio.id)"><span class="d-inline-block float-left pr-2"><font-awesome-icon icon="trash" /></span>Apagar</b-dropdown-item>
               </b-dropdown>
             </td>
           </tr>
@@ -132,8 +132,22 @@ export default {
     ])  },
   methods: {
     ...mapActions([
-      'addExercicio'
+      'addExercicio',
+      'delExercicio'
     ]),
+    deleteExercicio (exercicioId){
+      const payload = {
+        id: exercicioId,
+        treino_id: this.id
+      }
+
+      this.delExercicio(payload)
+      this.$emit('showAlert', {
+        mensagem: 'Exercício apagado',
+        tipo: 'success',
+        tempo: 2000
+      });
+    },
     criarExercicio (){
       if (!this.form.nome) {
         this.$emit('showAlert', {
@@ -164,7 +178,7 @@ export default {
       }
 
       this.$emit('showAlert', {
-        mensagem: 'Novo treino adicionado',
+        mensagem: 'Novo exercício adicionado',
         tipo: 'success',
         tempo: 2000
       });
