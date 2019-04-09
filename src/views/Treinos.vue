@@ -22,7 +22,7 @@
         <tbody>
           <tr v-for="treino in treinos" :key="treino.index">
             <td><router-link :to="{ name: 'Treino', params: { id: treino.id }}">{{ treino.nome }}</router-link></td>
-            <td>{{ treino.ultimo_treino | moment('DD/MM/YYYY') }} ({{ treino.ultimo_treino | moment("from", "now") }})</td>
+            <td>{{ treino.ultimo_treino | moment('DD/MM/YYYY') }} <span v-if="treino.ultimo_treino">({{ treino.ultimo_treino | moment("from", "now") }})</span></td>
             <td>
               <b-dropdown variant="light" size="sm" no-caret>
                 <template slot="button-content">
@@ -39,6 +39,7 @@
         </tbody>
       </table>
     </div>
+    <!-- MODALS -->
     <b-modal
       id="modal_novo_treino"
       ref="modal_novo_treino"
@@ -63,25 +64,29 @@
         </b-button>
       </div>
     </b-modal>
+    <!-- FIM MODALS -->
+    <Alert/>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex'
 import libs from '@/mixins/libs'
+import Alert from '@/components/Alert.vue'
 
 export default {
   name: 'Treinos',
   data () {
     return {
       form: {
-        id: null,
-        nome: '',
-        ultimo_treino: null
+        nome: ''
       }
     }
   },
   mixins: [libs],
+  components: {
+    Alert
+  },
   computed: {
     ...mapState([
       'treinos'
@@ -92,9 +97,17 @@ export default {
       'addTreino'
     ]),
     criarTreino (){
+      if (!this.form.nome) {
+        this.$emit('showAlert', {
+          mensagem: 'Por favor, digite o nome do treino',
+          tipo: 'danger'
+        });
+        return
+      }
+      
       this.$refs.modal_novo_treino.hide()
-
-const payload = {
+  
+      const payload = {
         id: this.generateUUID(),
         nome: this.form.nome,
         ultimo_treino: this.form.ultimo_treino
@@ -103,10 +116,13 @@ const payload = {
       this.addTreino(payload)
       // reset form after submit
       this.form = {
-        nome: '',
-        id: null,
-        ultimo_treino: null
+        nome: ''
       }
+
+      this.$emit('showAlert', {
+        mensagem: 'Novo treino adicionado',
+        tipo: 'success'
+      });
     }
   }
 }
