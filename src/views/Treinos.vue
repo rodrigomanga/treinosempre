@@ -22,7 +22,7 @@
         <tbody>
           <tr v-for="treino in treinos" :key="treino.index">
             <td><router-link :to="{ name: 'Treino', params: { id: treino.id }}">{{ treino.nome }}</router-link></td>
-            <td>{{ treino.ultimo_treino | moment('DD/MM/YYYY') }} <span v-if="treino.ultimo_treino">({{ treino.ultimo_treino | moment("from", "now") }})</span></td>
+            <td><span v-if="treino.ultimo_treino">{{ treino.ultimo_treino | moment('DD/MM/YYYY') }} ({{ treino.ultimo_treino | moment("from", "now") }})</span></td>
             <td>
               <b-dropdown variant="light" size="sm" no-caret>
                 <template slot="button-content">
@@ -110,7 +110,8 @@ export default {
       const payload = {
         id: this.generateUUID(),
         nome: this.form.nome,
-        ultimo_treino: this.form.ultimo_treino
+        ultimo_treino: this.form.ultimo_treino,
+        exercicios: []
       }
 
       this.addTreino(payload)
@@ -121,7 +122,8 @@ export default {
 
       this.$emit('showAlert', {
         mensagem: 'Novo treino adicionado',
-        tipo: 'success'
+        tipo: 'success',
+        tempo: 2000
       });
     }
   }

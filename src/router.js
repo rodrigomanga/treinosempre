@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Inicio from '@/views/Inicio'
 import Treinos from '@/views/Treinos'
-//import Treino from '@/views/Treino'
+import Treino from '@/views/Treino'
 
 Vue.use(Router)
 
@@ -20,11 +20,11 @@ export default new Router({
       name: 'Treinos',
       component: Treinos
     }
-    // ,
-    // {
-    //   path: '/Treino/:id',
-    //   name: 'Treino',
-    //   component: Treino
-    // }
+    ,
+    {
+      path: '/Treino/:id',
+      name: 'Treino',
+      component: Treino
+    }
   ]
 })
