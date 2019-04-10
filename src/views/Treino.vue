@@ -33,6 +33,8 @@
                   <font-awesome-icon icon="ellipsis-v" />
                 </template>
                 <b-dropdown-item @click="deleteExercicio(exercicio.id)"><span class="d-inline-block float-left pr-2"><font-awesome-icon icon="trash" /></span>Apagar</b-dropdown-item>
+                <b-dropdown-item @click="move_exercicio(index,index-1)"><span class="d-inline-block float-left pr-2"><font-awesome-icon icon="arrow-up" /></span>Sobe</b-dropdown-item>
+                <b-dropdown-item @click="move_exercicio(index,index+1)"><span class="d-inline-block float-left pr-2"><font-awesome-icon icon="arrow-down" /></span>Desce</b-dropdown-item>
               </b-dropdown>
             </td>
           </tr>
@@ -133,7 +135,8 @@ export default {
   methods: {
     ...mapActions([
       'addExercicio',
-      'delExercicio'
+      'delExercicio',
+      'moveExercicio'
     ]),
     deleteExercicio (exercicioId){
       const payload = {
@@ -147,6 +150,15 @@ export default {
         tipo: 'success',
         tempo: 2000
       });
+    },
+    move_exercicio (old_index, new_index){
+      const payload = {
+        old_index: old_index,
+        new_index: new_index,
+        treino_id: this.id
+      }
+
+      this.moveExercicio(payload)
     },
     criarExercicio (){
       if (!this.form.nome) {

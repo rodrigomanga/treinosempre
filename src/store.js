@@ -49,6 +49,20 @@ export default new Vuex.Store({
           localStorage.setItem('treinosempre', JSON.stringify(state))
         }
       }
+    },
+    moveExercicio: (state, payload) => {
+      const posicaoTreino = state.treinos.findIndex(objeto => objeto.id === payload.treino_id)
+      if (posicaoTreino >= 0) {
+        if(
+          payload.old_index >= 0 && 
+          payload.old_index < state.treinos[posicaoTreino].exercicios.length &&
+          payload.new_index >= 0 &&
+          payload.new_index < state.treinos[posicaoTreino].exercicios.length 
+          ) {
+            state.treinos[posicaoTreino].exercicios.splice(payload.new_index, 0, state.treinos[posicaoTreino].exercicios.splice(payload.old_index, 1)[0]);
+            localStorage.setItem('treinosempre', JSON.stringify(state))
+          }
+      }
     }
   },
   actions: {
@@ -63,6 +77,9 @@ export default new Vuex.Store({
     },
     delExercicio: ({ commit }, payload) => {
       commit("delExercicio", payload)
+    },
+    moveExercicio: ({ commit }, payload) => {
+      commit("moveExercicio", payload)
     }
   },
   getters: {
