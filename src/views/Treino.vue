@@ -23,7 +23,11 @@
         </thead>
         <tbody>
           <tr v-for="(exercicio, index) in treino.exercicios" :key="index">
-            <td><span class="exercicio" :class="{ 'exercicio-marcado': exercicio.marcado}" @click="exercicio.marcado != exercicio.marcado">{{ index }}- {{ exercicio.nome }} ({{ exercicio.marcado }})</span></td>
+            <td>
+              <!-- <span class="exercicio" :class="{ 'exercicio-marcado': exercicio.marcado}" @click="exercicio.marcado != exercicio.marcado">{{ index }}-  -->
+                {{ exercicio.nome }} 
+              <!-- </span> -->
+            </td>
             <td>{{ exercicio.carga }}</td>
             <td>{{ exercicio.repeticao }}</td>
             <td>{{ exercicio.series }}</td>
