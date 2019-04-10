@@ -24,9 +24,9 @@
         <tbody>
           <tr v-for="(exercicio, index) in treino.exercicios" :key="index">
             <td>
-              <!-- <span class="exercicio" :class="{ 'exercicio-marcado': exercicio.marcado}" @click="exercicio.marcado != exercicio.marcado">{{ index }}-  -->
+              <span class="exercicio" :class="{ 'exercicio-marcado': marcados[index]}" @click="marcarExercicio(index)">
                 {{ exercicio.nome }} 
-              <!-- </span> -->
+              </span>
             </td>
             <td>{{ exercicio.carga }}</td>
             <td>{{ exercicio.repeticao }}</td>
@@ -121,7 +121,8 @@ export default {
         repeticao: 10,
         series: 4
       },
-      treino: []
+      treino: [],
+      marcados: []
     }
   },
   mounted () {
@@ -142,6 +143,9 @@ export default {
       'delExercicio',
       'moveExercicio'
     ]),
+    marcarExercicio (index) {
+      this.$set(this.marcados, index, !this.marcados[index])
+    },
     deleteExercicio (exercicioId){
       const payload = {
         id: exercicioId,
@@ -209,6 +213,6 @@ export default {
 }
 .exercicio-marcado {
   text-decoration: line-through !important;
-  color: red !important;
+  color: grey !important;
 }
 </style>
