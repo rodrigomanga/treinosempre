@@ -70,7 +70,6 @@
 </template>
 
 <script>
-import treinosDb from '../mixins/treinosDb'
 import Alert from '@/components/Alert.vue'
 
 export default {
@@ -80,15 +79,18 @@ export default {
       form: {
         nome: ''
       },
+      treinos:[]
     }
   },
-  mixins: [treinosDb],
   components: {
     Alert
   },
+  mounted () {
+    this.treinos = this.$dbService.getTreinos()
+  },
   methods: {
     deleteTreino (treinoId){
-      this.deleteTreino(treinoId)
+      this.$dbService.deleteTreino(treinoId)
       this.$emit('showAlert', {
         mensagem: 'Treino apagado',
         tipo: 'success',
@@ -106,7 +108,7 @@ export default {
       
       this.$refs.modal_novo_treino.hide()
 
-      this.novoTreino(this.form.nome)
+      this.$dbService.novoTreino(this.form.nome)
  
       // reset form after submit
       this.form = {

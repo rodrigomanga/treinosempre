@@ -4,7 +4,9 @@ import router from './router'
 import './config/fontawesome.js' // Font Awesome config
 import './config/bootstrap.js' // Bootstrap config
 import './config/moment.js' // Moment config
+import DbService from './components/database.js'
 
+Vue.prototype.$dbService = new DbService();
 
 Vue.config.productionTip = false
 
