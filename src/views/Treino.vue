@@ -106,7 +106,6 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
 import libs from '@/mixins/libs'
 import Alert from '@/components/Alert.vue'
 
@@ -133,79 +132,12 @@ export default {
   components: {
     Alert
   },
-  computed: {
-    ...mapGetters([
-      'getTreino'
-    ])  },
   methods: {
-    ...mapActions([
-      'addExercicio',
-      'delExercicio',
-      'moveExercicio'
-    ]),
-    marcarExercicio (index) {
-      this.$set(this.marcados, index, !this.marcados[index])
-    },
-    deleteExercicio (exercicioId){
-      const payload = {
-        id: exercicioId,
-        treino_id: this.id
-      }
-
-      this.delExercicio(payload)
-      this.$emit('showAlert', {
-        mensagem: 'Exercício apagado',
-        tipo: 'success',
-        tempo: 2000
-      });
-    },
-    move_exercicio (old_index, new_index){
-      const payload = {
-        old_index: old_index,
-        new_index: new_index,
-        treino_id: this.id
-      }
-
-      this.moveExercicio(payload)
-    },
-    criarExercicio (){
-      if (!this.form.nome) {
-        this.$emit('showAlert', {
-          mensagem: 'Por favor, digite o nome do exercício',
-          tipo: 'danger'
-        });
-        return
-      }
-      
-      this.$refs.modal_novo_exercicio.hide()
-  
-      const payload = {
-        id: this.generateUUID(),
-        nome: this.form.nome,
-        carga: this.form.carga,
-        repeticao: this.form.repeticao,
-        series: this.form.series,
-        treino_id: this.id
-      }
-
-      this.addExercicio(payload)
-      // reset form after submit
-      this.form = {
-        nome: '',
-        carga: 10,
-        repeticao: 10,
-        series: 4
-      }
-
-      this.$emit('showAlert', {
-        mensagem: 'Novo exercício adicionado',
-        tipo: 'success',
-        tempo: 2000
-      });
-    }
+    
   }
 }
 </script>
+
 <style>
 .exercicio {
   text-decoration: none;

@@ -70,8 +70,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
-import libs from '@/mixins/libs'
+import treinosDb from '../mixins/treinosDb'
 import Alert from '@/components/Alert.vue'
 
 export default {
@@ -80,29 +79,16 @@ export default {
     return {
       form: {
         nome: ''
-      }
+      },
     }
   },
-  mixins: [libs],
+  mixins: [treinosDb],
   components: {
     Alert
   },
-  computed: {
-    ...mapState([
-      'treinos'
-    ])
-  },
   methods: {
-    ...mapActions([
-      'addTreino',
-      'delTreino'
-    ]),
     deleteTreino (treinoId){
-      const payload = {
-        id: treinoId,
-      }
-
-      this.delTreino(payload)
+      this.deleteTreino(treinoId)
       this.$emit('showAlert', {
         mensagem: 'Treino apagado',
         tipo: 'success',
@@ -119,15 +105,9 @@ export default {
       }
       
       this.$refs.modal_novo_treino.hide()
-  
-      const payload = {
-        id: this.generateUUID(),
-        nome: this.form.nome,
-        ultimo_treino: this.form.ultimo_treino,
-        exercicios: []
-      }
 
-      this.addTreino(payload)
+      this.novoTreino(this.form.nome)
+ 
       // reset form after submit
       this.form = {
         nome: ''
