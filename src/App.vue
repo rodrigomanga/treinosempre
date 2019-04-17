@@ -1,45 +1,23 @@
 <template>
   <div id="app">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a
-        class="navbar-brand"
-        href="#"
-      >
-        <img
-          src="/gym_invert.png"
-          width="32"
-          height="32"
-          class="d-inline-block align-top"
-          alt=""
-        >
-        TREINO SEMPRE
-      </a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
+    <b-navbar toggleable="md" type="dark" variant="dark" static="top">
+      <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
 
-      <div
-        class="collapse navbar-collapse"
-        id="navbarSupportedContent"
-      >
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <a
-              class="nav-link"
-              href="/treinos"
-            >Treinos</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
+      <b-navbar-brand to="/">
+        <img src="/gym_invert.png" width="32" height="32">
+        <span class="pull-left">TREINO SEMPRE</span>
+      </b-navbar-brand>
+
+      <b-collapse is-nav id="nav_collapse">
+        <!-- Right aligned nav items -->
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item to="/treinos" right>
+            Treinos
+          </b-nav-item>
+        </b-navbar-nav>
+
+      </b-collapse>
+    </b-navbar>
     <router-view />
   </div>
 </template>

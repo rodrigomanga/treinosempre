@@ -185,6 +185,11 @@ export default {
       this.$dbService.novoLog(this.treino, dados)
       this.marcados = []
       this.horarios = []
+      this.$emit('showAlert', {
+        mensagem: 'Treino gravado com sucesso',
+        tipo: 'success',
+        tempo: 2000
+      });
     }
   }
 }
