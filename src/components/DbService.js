@@ -1,5 +1,5 @@
-var moment = require('moment')
 import helpers from '@/components/Helpers'
+import moment from 'moment';
 
 export default class DbService {
   constructor() {
@@ -33,7 +33,8 @@ export default class DbService {
       nome: nome,
       data_criacao: moment().format("YYYY-MM-DD"),
       ultimo_treino: null,
-      exercicios: []
+      exercicios: [],
+      log: []
     });
     this.saveTreinos()
     return id
@@ -77,6 +78,13 @@ export default class DbService {
         treino.exercicios.splice(new_index, 0, treino.exercicios.splice(old_index, 1)[0])
         this.saveTreinos()
     }
+  }
+
+  novoLog(treino, dados) {
+    treino.ultimo_treino = moment().format("YYYY-MM-DD HH:mm:ss")
+    if(!treino.hasOwnProperty("log")) treino.log = []
+    treino.log.push(dados)
+    this.saveTreinos()
   }
 
   importaTreinos (treinos) {

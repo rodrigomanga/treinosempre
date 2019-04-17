@@ -8,6 +8,7 @@
       </div>
       <div class="col float-right">
         <b-button v-b-modal.modal_novo_exercicio size="sm" variant="outline-primary" class="float-right">Novo exercício</b-button>
+        <b-button v-if="marcados.length >0" @click="finalizaTreino()" size="sm" variant="outline-danger" class="float-right mr-2">Finalizar treino</b-button>
       </div>
     </div>
     <div class="table-responsive" v-if="treino && treino.exercicios && treino.exercicios.length>0">
@@ -120,7 +121,8 @@ export default {
         series: 4
       },
       treino: [],
-      marcados: []
+      marcados: [],
+      horarios: []
     }
   },
   mounted () {
@@ -166,7 +168,24 @@ export default {
     },
     marcarExercicio (index) {
       this.$set(this.marcados, index, !this.marcados[index])
+      if(this.marcados[index]) this.$set(this.horarios, index, this.$moment().format("YYYY-MM-DD HH:mm:ss"))
+      else this.$set(this.horarios, index, null)
     },
+    finalizaTreino(){
+      let dados = []
+      this.marcados.forEach( (marcado, index) => {
+        if(marcado === true){
+          dados.push({
+            id: this.treino.exercicios[index].id,
+            nome: this.treino.exercicios[index].nome,
+            hora: this.horarios[index]
+          })
+        }
+      })
+      this.$dbService.novoLog(this.treino, dados)
+      this.marcados = []
+      this.horarios = []
+    }
   }
 }
 </script>
