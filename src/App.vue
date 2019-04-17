@@ -6,7 +6,7 @@
         href="#"
       >
         <img
-          src="gym_invert.png"
+          src="/gym_invert.png"
           width="32"
           height="32"
           class="d-inline-block align-top"
