@@ -4,30 +4,30 @@ import libs from '@/components/libs'
 export default class DbService {
   constructor() {
     this.treinos = []
-    let item = localStorage.getItem("treinosempre");
+    let item = localStorage.getItem("treinosempre")
     if (item) {
-      Object.assign(this.treinos, JSON.parse(item));
+      Object.assign(this.treinos, JSON.parse(item))
     }
   }
 
   getTreinos() {
-    return this.treinos;
+    return this.treinos
   }
 
   getTreino (treinoId) {
-    var i = this.treinos.findIndex(x => x.id === treinoId);
+    var i = this.treinos.findIndex(x => x.id === treinoId)
     if (i < 0) {
-      return null;
+      return null
     }
-    return this.treinos[i];
+    return this.treinos[i]
   }
 
   saveTreinos () {
-    localStorage.setItem("treinosempre", JSON.stringify(this.treinos));
+    localStorage.setItem("treinosempre", JSON.stringify(this.treinos))
   }
 
   novoTreino (nome) {
-    var id = libs.generateUUID();
+    var id = libs.generateUUID()
     this.treinos.push({
       id: id,
       nome: nome,
@@ -35,14 +35,14 @@ export default class DbService {
       ultimo_treino: null,
       exercicios: []
     });
-    this.saveTreinos();
-    return id;
+    this.saveTreinos()
+    return id
   }
 
   novoExercicio (treino, dados) {
-    var id = this.generateUUID();
-    if (!this.treino.hasOwnProperty("exercicios")) this.treino.exercicios = [];
-    this.treino.exercicios.push({
+    var id = libs.generateUUID()
+    if (!treino.hasOwnProperty("exercicios")) treino.exercicios = []
+    treino.exercicios.push({
       id: id,
       nome: dados.nome,
       carga: dados.carga,
@@ -51,20 +51,32 @@ export default class DbService {
       data_criacao: moment().format("YYYY-MM-DD"),
       ultimo_treino: null
     });
-    this.saveTreinos();
+    this.saveTreinos()
     // console.log(treino, dados)
-    return id;
+    return id
   }
   
   deleteTreino (id) {
-    var obj = this.treinos.findIndex(x => x.id === id);
-    this.treinos.splice(obj, 1);
-    this.saveTreinos();
+    var obj = this.treinos.findIndex(x => x.id === id)
+    this.treinos.splice(obj, 1)
+    this.saveTreinos()
   }
   deleteExercicio (treino, id) {
-    var obj = treino.exercicios.findIndex(x => x.id === id);
-    this.treino.exercicios.splice(obj, 1);
-    this.saveTreinos();
+    var obj = treino.exercicios.findIndex(x => x.id === id)
+    treino.exercicios.splice(obj, 1)
+    this.saveTreinos()
+  }
+
+  moveExercicio (treino, old_index,new_index) {
+    if(
+      old_index >= 0 && 
+      old_index < treino.exercicios.length &&
+      new_index >= 0 &&
+      new_index < treino.exercicios.length 
+      ) {
+        treino.exercicios.splice(new_index, 0, treino.exercicios.splice(old_index, 1)[0])
+        this.saveTreinos()
+    }
   }
 
   importaTreinos (treinos) {
@@ -82,7 +94,7 @@ export default class DbService {
               series: dados[i].exercicios[e].series,
               data_criacao: dados[i].exercicios[e].data_criacao,
               ultimo_treino: dados[i].exercicios[e].ultimo_treino
-            });
+            })
           }
         }
         this.treinos.push({
@@ -91,13 +103,13 @@ export default class DbService {
           data_criacao: dados[i].data_criacao,
           ultimo_treino: dados[i].ultimo_treino,
           exercicios: exercicios
-        });
+        })
       }
-      this.saveTreinos();
-      return true;
+      this.saveTreinos()
+      return true
     } catch (error) {
-      console.log("try catch", error);
-      return false;
+      console.log("try catch", error)
+      return false
     }
   }
 }

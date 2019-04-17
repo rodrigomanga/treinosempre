@@ -36,9 +36,9 @@
                 <template slot="button-content">
                   <font-awesome-icon icon="ellipsis-v" />
                 </template>
-                <b-dropdown-item @click="deleteExercicio(exercicio.id)"><span class="d-inline-block float-left pr-2"><font-awesome-icon icon="trash" /></span>Apagar</b-dropdown-item>
-                <b-dropdown-item @click="move_exercicio(index,index-1)"><span class="d-inline-block float-left pr-2"><font-awesome-icon icon="arrow-up" /></span>Sobe</b-dropdown-item>
-                <b-dropdown-item @click="move_exercicio(index,index+1)"><span class="d-inline-block float-left pr-2"><font-awesome-icon icon="arrow-down" /></span>Desce</b-dropdown-item>
+                <b-dropdown-item @click="apaga(exercicio.id)"><span class="d-inline-block float-left pr-2"><font-awesome-icon icon="trash" /></span>Apagar</b-dropdown-item>
+                <b-dropdown-item @click="move(index,index-1)"><span class="d-inline-block float-left pr-2"><font-awesome-icon icon="arrow-up" /></span>Sobe</b-dropdown-item>
+                <b-dropdown-item @click="move(index,index+1)"><span class="d-inline-block float-left pr-2"><font-awesome-icon icon="arrow-down" /></span>Desce</b-dropdown-item>
               </b-dropdown>
             </td>
           </tr>
@@ -94,7 +94,7 @@
           variant="primary"
           size="sm"
           class="float-right"
-          @click="criarExercicio"
+          @click="novo"
         >
           Criar
         </b-button>
@@ -106,7 +106,6 @@
 </template>
 
 <script>
-import libs from '@/mixins/libs'
 import Alert from '@/components/Alert.vue'
 
 export default {
@@ -126,14 +125,48 @@ export default {
   },
   mounted () {
     this.id = this.$route.params.id
-    this.treino = this.getTreino(this.id)
+    this.treino = this.$dbService.getTreino(this.id)
   },
-  mixins: [libs],
   components: {
     Alert
   },
   methods: {
-    
+    novo (){
+      if (!this.form.nome) {
+        this.$emit('showAlert', {
+          mensagem: 'Por favor, digite o nome do exercício',
+          tipo: 'danger'
+        });
+        return
+      }
+      
+      this.$refs.modal_novo_exercicio.hide()
+
+      this.$dbService.novoExercicio(this.treino, this.form)
+ 
+      // reset form after submit
+      this.form.nome = '';
+
+      this.$emit('showAlert', {
+        mensagem: 'Novo exercício adicionado',
+        tipo: 'success',
+        tempo: 2000
+      });
+    },
+    apaga (exercicioId){
+      this.$dbService.deleteExercicio(this.treino, exercicioId)
+      this.$emit('showAlert', {
+        mensagem: 'Exercício apagado',
+        tipo: 'success',
+        tempo: 2000
+      });
+    },
+    move (old_index, new_index){
+      this.$dbService.moveExercicio(this.treino, old_index,new_index)
+    },
+    marcarExercicio (index) {
+      this.$set(this.marcados, index, !this.marcados[index])
+    },
   }
 }
 </script>

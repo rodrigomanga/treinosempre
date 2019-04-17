@@ -29,7 +29,7 @@
                   <font-awesome-icon icon="ellipsis-v" />
                 </template>
                 <b-dropdown-item :to="{ name: 'Treino', params: { id: treino.id }}"><span class="d-inline-block float-left pr-2"><font-awesome-icon icon="edit" /></span>Editar</b-dropdown-item>
-                <b-dropdown-item @click="deleteTreino(treino.id)"><span class="d-inline-block float-left pr-2"><font-awesome-icon icon="trash" /></span>Apagar</b-dropdown-item>
+                <b-dropdown-item @click="apaga(treino.id)"><span class="d-inline-block float-left pr-2"><font-awesome-icon icon="trash" /></span>Apagar</b-dropdown-item>
               </b-dropdown>
             </td>
           </tr>
@@ -58,7 +58,7 @@
           variant="primary"
           size="sm"
           class="float-right"
-          @click="criarTreino"
+          @click="novo"
         >
           Criar
         </b-button>
@@ -89,7 +89,7 @@ export default {
     this.treinos = this.$dbService.getTreinos()
   },
   methods: {
-    deleteTreino (treinoId){
+    apaga (treinoId){
       this.$dbService.deleteTreino(treinoId)
       this.$emit('showAlert', {
         mensagem: 'Treino apagado',
@@ -97,7 +97,7 @@ export default {
         tempo: 2000
       });
     },
-    criarTreino (){
+    novo (){
       if (!this.form.nome) {
         this.$emit('showAlert', {
           mensagem: 'Por favor, digite o nome do treino',
@@ -111,9 +111,7 @@ export default {
       this.$dbService.novoTreino(this.form.nome)
  
       // reset form after submit
-      this.form = {
-        nome: ''
-      }
+      this.form.nome = ''
 
       this.$emit('showAlert', {
         mensagem: 'Novo treino adicionado',
