@@ -1,5 +1,5 @@
 var moment = require('moment')
-import libs from '@/components/libs'
+import helpers from '@/components/Helpers'
 
 export default class DbService {
   constructor() {
@@ -27,7 +27,7 @@ export default class DbService {
   }
 
   novoTreino (nome) {
-    var id = libs.generateUUID()
+    var id = helpers.generateUUID()
     this.treinos.push({
       id: id,
       nome: nome,
@@ -40,7 +40,7 @@ export default class DbService {
   }
 
   novoExercicio (treino, dados) {
-    var id = libs.generateUUID()
+    var id = helpers.generateUUID()
     if (!treino.hasOwnProperty("exercicios")) treino.exercicios = []
     treino.exercicios.push({
       id: id,
@@ -87,7 +87,7 @@ export default class DbService {
         if (dados[i].hasOwnProperty("exercicios")) {
           for (var e = 0; e < dados[i].exercicios.length; e++) {
             exercicios.push({
-              id: libs.generateUUID(),
+              id: helpers.generateUUID(),
               nome: dados[i].exercicios[e].nome,
               carga: dados[i].exercicios[e].carga,
               repeticao: dados[i].exercicios[e].repeticao,
