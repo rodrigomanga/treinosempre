@@ -34,7 +34,7 @@ export default class DbService {
       data_criacao: moment().format("YYYY-MM-DD"),
       ultimo_treino: null,
       exercicios: [],
-      log: []
+      logs: []
     });
     this.saveTreinos()
     return id
@@ -82,8 +82,8 @@ export default class DbService {
 
   novoLog(treino, dados) {
     treino.ultimo_treino = moment().format("YYYY-MM-DD HH:mm:ss")
-    if(!treino.hasOwnProperty("log")) treino.log = []
-    treino.log.push(dados)
+    if(!treino.hasOwnProperty("logs")) treino.logs = []
+    treino.logs.push(dados)
     this.saveTreinos()
   }
 
