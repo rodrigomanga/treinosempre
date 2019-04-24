@@ -108,6 +108,7 @@
 
 <script>
 import Alert from '@/components/Alert.vue'
+import helpers from '@/components/Helpers'
 
 export default {
   name: 'Treino',
@@ -164,7 +165,11 @@ export default {
       });
     },
     move (old_index, new_index){
-      this.$dbService.moveExercicio(this.treino, old_index,new_index)
+      helpers.moveItem(this.treino, old_index,new_index)
+      if(this.marcados.length>0)
+        helpers.moveItem(this.marcados, old_index,new_index)
+      if(this.horarios.length>0)
+        helpers.moveItem(this.horarios, old_index,new_index)
     },
     marcarExercicio (index) {
       this.$set(this.marcados, index, !this.marcados[index])

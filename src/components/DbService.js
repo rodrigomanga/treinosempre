@@ -68,18 +68,6 @@ export default class DbService {
     this.saveTreinos()
   }
 
-  moveExercicio (treino, old_index,new_index) {
-    if(
-      old_index >= 0 && 
-      old_index < treino.exercicios.length &&
-      new_index >= 0 &&
-      new_index < treino.exercicios.length 
-      ) {
-        treino.exercicios.splice(new_index, 0, treino.exercicios.splice(old_index, 1)[0])
-        this.saveTreinos()
-    }
-  }
-
   novoLog(treino, dados) {
     treino.ultimo_treino = moment().format("YYYY-MM-DD HH:mm:ss")
     if(!treino.hasOwnProperty("log")) treino.log = []
