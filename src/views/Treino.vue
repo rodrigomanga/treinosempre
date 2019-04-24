@@ -183,6 +183,9 @@ export default {
           dados.push({
             id: this.treino.exercicios[index].id,
             nome: this.treino.exercicios[index].nome,
+            carga: this.treino.exercicios[index].carga,
+            repeticao: this.treino.exercicios[index].repeticao,
+            series: this.treino.exercicios[index].series,
             hora: this.horarios[index]
           })
         }
