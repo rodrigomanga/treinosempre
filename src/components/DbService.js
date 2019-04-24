@@ -4,9 +4,14 @@ import moment from 'moment';
 export default class DbService {
   constructor() {
     this.treinos = []
-    let item = localStorage.getItem("treinosempre")
-    if (item) {
-      Object.assign(this.treinos, JSON.parse(item))
+    try {
+      let item = localStorage.getItem("treinosempre")
+      if (item) {
+        Object.assign(this.treinos, JSON.parse(item))
+      }
+    } catch (error) {
+      console.log("try catch", error)
+      return false
     }
   }
 
