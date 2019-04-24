@@ -20,7 +20,7 @@ export default class DbService {
   }
 
   getTreino (treinoId) {
-    var i = this.treinos.findIndex(x => x.id === treinoId)
+    const i = this.treinos.findIndex(x => x.id === treinoId)
     if (i < 0) {
       return null
     }
@@ -32,7 +32,7 @@ export default class DbService {
   }
 
   novoTreino (nome) {
-    var id = helpers.generateUUID()
+    const id = helpers.generateUUID()
     this.treinos.push({
       id: id,
       nome: nome,
@@ -45,30 +45,37 @@ export default class DbService {
     return id
   }
 
-  novoExercicio (treino, dados) {
-    var id = helpers.generateUUID()
+  gravaExercicio (treino, dados) {
     if (!treino.hasOwnProperty("exercicios")) treino.exercicios = []
-    treino.exercicios.push({
-      id: id,
-      nome: dados.nome,
-      carga: dados.carga,
-      repeticao: dados.repeticao,
-      series: dados.series,
-      data_criacao: moment().format("YYYY-MM-DD"),
-      ultimo_treino: null
-    });
+    if(dados.id === null) {
+      dados.id = helpers.generateUUID()
+      treino.exercicios.push({
+        id: dados.id,
+        nome: dados.nome,
+        carga: dados.carga,
+        repeticao: dados.repeticao,
+        series: dados.series,
+        data_criacao: moment().format("YYYY-MM-DD"),
+        ultimo_treino: null
+      });
+    } else {
+      const index = treino.exercicios.findIndex(x => x.id === dados.id)
+      treino.exercicios[index].nome = dados.nome;
+      treino.exercicios[index].carga = dados.carga;
+      treino.exercicios[index].repeticao = dados.repeticao;
+      treino.exercicios[index].series = dados.series;
+    }
     this.saveTreinos()
-    // console.log(treino, dados)
-    return id
+    return dados.id
   }
   
   deleteTreino (id) {
-    var obj = this.treinos.findIndex(x => x.id === id)
+    const obj = this.treinos.findIndex(x => x.id === id)
     this.treinos.splice(obj, 1)
     this.saveTreinos()
   }
   deleteExercicio (treino, id) {
-    var obj = treino.exercicios.findIndex(x => x.id === id)
+    const obj = treino.exercicios.findIndex(x => x.id === id)
     treino.exercicios.splice(obj, 1)
     this.saveTreinos()
   }
@@ -82,11 +89,11 @@ export default class DbService {
 
   importaTreinos (treinos) {
     try {
-      var dados = JSON.parse(treinos);
-      for (var i = 0; i < dados.length; i++) {
+      const dados = JSON.parse(treinos);
+      for (let i = 0; i < dados.length; i++) {
         var exercicios = [];
         if (dados[i].hasOwnProperty("exercicios")) {
-          for (var e = 0; e < dados[i].exercicios.length; e++) {
+          for (let e = 0; e < dados[i].exercicios.length; e++) {
             exercicios.push({
               id: helpers.generateUUID(),
               nome: dados[i].exercicios[e].nome,

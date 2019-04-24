@@ -7,7 +7,7 @@
         <!-- <b-button size="sm" variant="primary" v-b-modal.modal_paste><font-awesome-icon icon="upload" /></b-button> -->
       </div>
       <div class="col float-right">
-        <b-button v-b-modal.modal_novo_exercicio size="sm" variant="outline-primary" class="float-right">Novo exercício</b-button>
+        <b-button @click="abreModalExercicio()" size="sm" variant="outline-primary" class="float-right">Novo exercício</b-button>
         <b-button v-if="marcados.length >0" @click="finalizaTreino()" size="sm" variant="outline-danger" class="float-right mr-2">Finalizar treino</b-button>
       </div>
     </div>
@@ -37,6 +37,7 @@
                 <template slot="button-content">
                   <font-awesome-icon icon="ellipsis-v" />
                 </template>
+                <b-dropdown-item  @click="edita(exercicio)"><span class="d-inline-block float-left pr-2"><font-awesome-icon icon="edit" /></span>Editar</b-dropdown-item>
                 <b-dropdown-item @click="apaga(exercicio.id)"><span class="d-inline-block float-left pr-2"><font-awesome-icon icon="trash" /></span>Apagar</b-dropdown-item>
                 <b-dropdown-item @click="move(index,index-1)"><span class="d-inline-block float-left pr-2"><font-awesome-icon icon="arrow-up" /></span>Sobe</b-dropdown-item>
                 <b-dropdown-item @click="move(index,index+1)"><span class="d-inline-block float-left pr-2"><font-awesome-icon icon="arrow-down" /></span>Desce</b-dropdown-item>
@@ -50,8 +51,8 @@
 
     <!-- MODALS -->
       <b-modal
-      id="modal_novo_exercicio"
-      ref="modal_novo_exercicio"
+      id="modal_exercicio"
+      ref="modal_exercicio"
       title="Novo exercício"
       >
       <b-form-group id="inputGroup" label="Nome:" label-for="Input">
@@ -95,9 +96,10 @@
           variant="primary"
           size="sm"
           class="float-right"
-          @click="novo"
+          @click="gravar"
         >
-          Criar
+          <span v-if="form.id===null">Criar</span>
+          <span v-if="form.id!==null">Salvar</span>
         </b-button>
       </div>
     </b-modal>
@@ -115,12 +117,7 @@ export default {
   data () {
     return {
       id: null,
-      form: {
-        nome: '',
-        carga: 10,
-        repeticao: 10,
-        series: 4
-      },
+      form: {},
       treino: [],
       marcados: [],
       horarios: []
@@ -134,7 +131,20 @@ export default {
     Alert
   },
   methods: {
-    novo (){
+    resetForm () {
+      this.form = {
+              id: null,
+              nome: '',
+              carga: 0,
+              repeticao: 0,
+              series: 0
+            }
+    },
+    abreModalExercicio () {
+      this.resetForm()
+      this.$refs['modal_exercicio'].show()
+    },
+    gravar (){
       if (!this.form.nome) {
         this.$emit('showAlert', {
           mensagem: 'Por favor, digite o nome do exercício',
@@ -143,20 +153,27 @@ export default {
         return
       }
       
-      this.$refs.modal_novo_exercicio.hide()
-
-      this.$dbService.novoExercicio(this.treino, this.form)
- 
-      // reset form after submit
-      this.form.nome = '';
+      this.$refs.modal_exercicio.hide()
+      this.$dbService.gravaExercicio(this.treino, this.form)
+      this.resetForm()
 
       this.$emit('showAlert', {
-        mensagem: 'Novo exercício adicionado',
+        mensagem: 'Exercício gravado',
         tipo: 'success',
         tempo: 2000
       });
     },
-    apaga (exercicioId){
+    edita (exercicio) {
+      this.form = {
+        id: exercicio.id,
+        nome: exercicio.nome,
+        carga: exercicio.carga,
+        repeticao: exercicio.repeticao,
+        series: exercicio.series,
+      }
+      this.$refs['modal_exercicio'].show()
+    },
+    apaga (exercicioId) {
       this.$dbService.deleteExercicio(this.treino, exercicioId)
       this.$emit('showAlert', {
         mensagem: 'Exercício apagado',
@@ -164,7 +181,7 @@ export default {
         tempo: 2000
       });
     },
-    move (old_index, new_index){
+    move (old_index, new_index) {
       helpers.moveItem(this.treino, old_index,new_index)
       if(this.marcados.length>0)
         helpers.moveItem(this.marcados, old_index,new_index)
@@ -176,7 +193,7 @@ export default {
       if(this.marcados[index]) this.$set(this.horarios, index, this.$moment().format("YYYY-MM-DD HH:mm:ss"))
       else this.$set(this.horarios, index, null)
     },
-    finalizaTreino(){
+    finalizaTreino() {
       let dados = []
       this.marcados.forEach( (marcado, index) => {
         if(marcado === true){
