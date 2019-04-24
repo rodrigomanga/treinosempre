@@ -49,11 +49,36 @@
     </div>
     <h4 v-show="!!!treino.exercicios || !!!treino.exercicios.length">Nenhum exercício disponível</h4>
 
+    <h3 v-if="treino && treino.logs && treino.logs.length>0" class="d-inline-block">Treinos executados</h3>
+    <div class="table-responsive" v-if="treino && treino.logs && treino.logs.length>0">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Data</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(log, index) in treino.logs" :key="index">
+            <td>{{ log.data | moment('DD/MM/YYYY HH:mm')}}</td>
+            <td>
+              <b-dropdown variant="light" size="sm" no-caret>
+                <template slot="button-content">
+                  <font-awesome-icon icon="ellipsis-v" />
+                </template>
+                <b-dropdown-item @click="apagaLog(index)"><span class="d-inline-block float-left pr-2"><font-awesome-icon icon="trash" /></span>Apagar</b-dropdown-item>
+              </b-dropdown>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <!-- MODALS -->
       <b-modal
       id="modal_exercicio"
       ref="modal_exercicio"
       title="Novo exercício"
+      @shown="focusModal"
       >
       <b-form-group id="inputGroup" label="Nome:" label-for="Input">
         <b-form-input
@@ -62,6 +87,7 @@
           v-model="form.nome"
           required
           placeholder="Digite o nome do novo exercício"
+          ref="campoNome"
         />
       </b-form-group>
       <b-form-group id="inputGroup" label="Carga:" label-for="Input">
@@ -71,6 +97,7 @@
           v-model="form.carga"
           required
           placeholder="Digite a carga ou peso do novo exercício"
+          @focus.native="$event.target.select()"
         />
       </b-form-group>
       <b-form-group id="inputGroup" label="Repetições:" label-for="Input">
@@ -80,6 +107,7 @@
           v-model="form.repeticao"
           required
           placeholder="Digite o número de repetições novo exercício"
+          @focus.native="$event.target.select()"
         />
       </b-form-group>
       <b-form-group id="inputGroup" label="Series:" label-for="Input">
@@ -89,6 +117,7 @@
           v-model="form.series"
           required
           placeholder="Digite o número de séries novo exercício"
+          @focus.native="$event.target.select()"
         />
       </b-form-group>
       <div slot="modal-footer" class="w-100">
@@ -144,6 +173,9 @@ export default {
       this.resetForm()
       this.$refs['modal_exercicio'].show()
     },
+    focusModal (){
+      this.$refs.campoNome.focus()
+    },
     gravar (){
       if (!this.form.nome) {
         this.$emit('showAlert', {
@@ -193,17 +225,20 @@ export default {
       if(this.marcados[index]) this.$set(this.horarios, index, this.$moment().format("YYYY-MM-DD HH:mm:ss"))
       else this.$set(this.horarios, index, null)
     },
-    finalizaTreino() {
-      let dados = []
+    finalizaTreino(){
+      let dados = {
+        data: this.$moment().format("YYYY-MM-DD HH:mm:ss"),
+        exercicios: []
+      }
       this.marcados.forEach( (marcado, index) => {
         if(marcado === true){
-          dados.push({
+          dados.exercicios.push({
             id: this.treino.exercicios[index].id,
             nome: this.treino.exercicios[index].nome,
             carga: this.treino.exercicios[index].carga,
             repeticao: this.treino.exercicios[index].repeticao,
             series: this.treino.exercicios[index].series,
-            hora: this.horarios[index]
+            data: this.horarios[index]
           })
         }
       })
@@ -212,6 +247,15 @@ export default {
       this.horarios = []
       this.$emit('showAlert', {
         mensagem: 'Treino gravado com sucesso',
+        tipo: 'success',
+        tempo: 2000
+      });
+    },
+    apagaLog (index) {
+      this.treino.logs.splice(index, 1)
+      this.$dbService.saveTreinos()
+      this.$emit('showAlert', {
+        mensagem: 'Log de treino apagado',
         tipo: 'success',
         tempo: 2000
       });
